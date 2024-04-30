@@ -47,4 +47,6 @@ cls_instance = pkg_to_class(pkg.class_name, [classes handles], [classes_handled 
 * Here's another example on how to use it with element being special classess themself :
 ![Execution](screenshots/execution2.png)
 
+* This code also works for functions, you could replace Classes by functions
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
