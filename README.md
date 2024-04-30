@@ -1,4 +1,4 @@
-# Sudoku_Solver
+# Class to Package
 <a name="readme-top"></a>
 
 <!-- TABLE OF CONTENTS -->
