@@ -138,6 +138,7 @@ def pkg_to_class(class_name: bytes,
 	- handled_classes_name: all the names in bytes of the classes that will be handled in creation
 
 	all handled_classes and handled_classes_name must be in the same order.
+	
 	handled_classes and handled_classes_name coudl also be function calls
 	- args_bytes ex: b'\\x1b[\\x02(\\x03int, \\x0222), (\\x03int, \\x0223)]' for args [22, 23]
 	- kwargs_bytes ex: b'\\x17{\\x01\\x04'test': (\\x03int, \\x0224)}' for kwargs {'test': 24}
