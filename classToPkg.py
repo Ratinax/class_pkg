@@ -253,7 +253,7 @@ def pkg_to_class(class_name: bytes,
 			kwargs[key] = _getArgValue(type, value, handled_classes, handled_classes_name)
 			kwargs_amount -= 1
 		return kwargs
-	cls = getClass(class_name, handled_classes)
+	cls = getClass(class_name, handled_classes, handled_classes_name)
 	if cls is None:
 		return str()
 	size, _ = decode_mbi(args_bytes[0:])
