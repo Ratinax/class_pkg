@@ -12,7 +12,6 @@
       </ul>
     </li>
     <li><a href="#Execution">Execution</a></li>
-    <li><a href="#Annex">Annex</a></li>
   </ol>
 </details>
 
