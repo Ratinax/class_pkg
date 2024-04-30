@@ -12,7 +12,7 @@ class Package:
 		return self.args_bytes[size:]
 
 
-def class_to_pkg(class_name: str, args: List[Any], kwargs: Dict[Any]) -> Package:
+def class_to_pkg(class_name: str, args: List[Any], kwargs: Dict[Any, Any]) -> Package:
 	'''
 	function to transform a class creation into bytes.
 	usage exmple: pkg = class_to_pkg("Test", ["arg1", "arg2"], {"arg3": 22}).
@@ -85,7 +85,7 @@ def class_to_pkg(class_name: str, args: List[Any], kwargs: Dict[Any]) -> Package
 				value = value[:-2]
 			value = b'' + chr(bracket_list[container.index(arg.__class__.__name__)][0]).encode() + encode_mbi(elem_amount) + value
 			value += chr(bracket_list[container.index(arg.__class__.__name__)][-1]).encode()
-			val += value
+			val += encode_mbi(len(value)) + value
 		else:
 			val = getEasyTypeRes(arg)
 		return b'(' + val + b'), '
@@ -186,6 +186,7 @@ def pkg_to_class(class_name: bytes,
 		elif type in [b'int', b'float']:
 			arg = eval(type)(value)
 		elif type in [b'dict', b'list', b'tuple']:
+			size, container_size = decode_mbi(value)
 			if type in [b'list', b'tuple']:
 				arg = getArgs(value)
 			elif type in [b'dict']:
@@ -258,4 +259,3 @@ def pkg_to_class(class_name: bytes,
 	size, _ = decode_mbi(kwargs_bytes[0:])
 	kwargs = getKwargs(kwargs_bytes[size:])
 	return cls(*args, **kwargs)
-
