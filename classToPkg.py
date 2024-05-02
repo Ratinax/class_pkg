@@ -138,7 +138,7 @@ def pkg_to_class(class_name: bytes,
 	- handled_classes_name: all the names in bytes of the classes that will be handled in creation
 
 	all handled_classes and handled_classes_name must be in the same order.
-	
+
 	handled_classes and handled_classes_name coudl also be function calls
 	- args_bytes ex: b'\\x1b[\\x02(\\x03int, \\x0222), (\\x03int, \\x0223)]' for args [22, 23]
 	- kwargs_bytes ex: b'\\x17{\\x01\\x04'test': (\\x03int, \\x0224)}' for kwargs {'test': 24}
@@ -249,7 +249,7 @@ def pkg_to_class(class_name: bytes,
 		while kwargs_amount > 0:
 			size, key = getKey(kwargs_bytes[i:])
 			i += size
-			size_, type, value = _getTypeAndValue(kwargs_bytes[i:])
+			_, type, value = _getTypeAndValue(kwargs_bytes[i:])
 			i += size
 			kwargs[key] = _getArgValue(type, value, handled_classes, handled_classes_name)
 			kwargs_amount -= 1
@@ -259,6 +259,8 @@ def pkg_to_class(class_name: bytes,
 		return str()
 	size, _ = decode_mbi(args_bytes[0:])
 	args = getArgs(args_bytes[size:])
+	if class_name == b'list':
+		return cls(args)
 	size, _ = decode_mbi(kwargs_bytes[0:])
 	kwargs = getKwargs(kwargs_bytes[size:])
 	return cls(*args, **kwargs)
