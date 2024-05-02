@@ -249,7 +249,7 @@ def pkg_to_class(class_name: bytes,
 		while kwargs_amount > 0:
 			size, key = getKey(kwargs_bytes[i:])
 			i += size
-			_, type, value = _getTypeAndValue(kwargs_bytes[i:])
+			size, type, value = _getTypeAndValue(kwargs_bytes[i:])
 			i += size
 			kwargs[key] = _getArgValue(type, value, handled_classes, handled_classes_name)
 			kwargs_amount -= 1
