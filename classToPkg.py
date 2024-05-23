@@ -3,13 +3,18 @@ from mbi import decode_mbi, encode_mbi
 
 class Package:
 	def __init__(self, class_name: bytes, args_bytes: bytes, kwargs_bytes: bytes):
-		self.class_name = class_name
-		self.args_bytes = args_bytes
-		self.kwargs_bytes = kwargs_bytes
+		self.class_name = b'' + class_name
+		self.args_bytes = b'' + args_bytes
+		self.kwargs_bytes = b'' + kwargs_bytes
 	@property
 	def upperPackageArgsBytes(self):
 		size, _ = decode_mbi(self.args_bytes)
 		return self.args_bytes[size:]
+
+	def __bytes__(self):
+		return b'' + encode_mbi(len(self.class_name)) + self.class_name \
+			+ encode_mbi(len(self.upperPackageArgsBytes)) + self.upperPackageArgsBytes \
+			+ encode_mbi(len(self.kwargs_bytes)) + self.kwargs_bytes
 
 
 def class_to_pkg(class_name: str, args: List[Any], kwargs: Dict[Any, Any]) -> Package:
@@ -264,3 +269,44 @@ def pkg_to_class(class_name: bytes,
 	size, _ = decode_mbi(kwargs_bytes[0:])
 	kwargs = getKwargs(kwargs_bytes[size:])
 	return cls(*args, **kwargs)
+
+def class_to_bytes(class_name: str, args: List[Any], kwargs: Dict[Any, Any]) -> bytes:
+	return bytes(class_to_pkg(class_name, args, kwargs))
+
+def bytes_to_class(data: bytes, handled_classes: List[object], handled_classes_name: List[bytes]) -> bytes:
+	i = 0
+
+	size, class_name_size = decode_mbi(data[i:])
+	i += size
+	class_name = data[i:i+class_name_size]
+	i += class_name_size
+
+	size, args_size = decode_mbi(data[i:])
+	i += size
+	args = data[i:i+args_size]
+	i += args_size
+
+	size, kwargs_size = decode_mbi(data[i:])
+	i += size
+	kwargs = data[i:i+kwargs_size]
+	i += kwargs_size
+
+	return pkg_to_class(class_name, handled_classes, handled_classes_name, args, kwargs)
+
+class Test():
+	def __init__(self, arg1, arg2=22) -> None:
+		self.arg1 = arg1
+		self.arg2 = arg2
+	def __str__(self):
+		return str(self.arg1) + ', ' + str(self.arg2)
+
+	def __repr__(self):
+		return str(self)
+
+data = class_to_bytes('Test', ["arg1"], {"arg2": 24})
+res = bytes_to_class(data, handled_classes=[Test], handled_classes_name=[b'Test'])
+print(res)
+
+pkg = class_to_pkg('Test', ["arg1"], {"arg2": 24})
+res = pkg_to_class(pkg.class_name, [Test], [b'Test'], pkg.upperPackageArgsBytes, pkg.kwargs_bytes)
+print(res)
