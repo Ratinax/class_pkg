@@ -51,6 +51,8 @@ The otherone to transform bytes to class declaration
     ```
     cls_instance = pkg_to_class(pkg.class_name, [classes handled], [classes_handled name in bytes], pkg.upperPackageArgsBytes, pkg.kwargs_bytes)
     ```
+  Knowing using bytes will go through packages methods, but bytes are more portable
+  than a Package instance
 
 * Here's an example on how to use both :
 ![Execution](screenshots/execution.png)
